@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.threejs的引用</title>
+  <!-- 方法1 -->
+  <!-- <script src="./threejs/build/three.js"></script> -->
+</head>
+
+<body>
+
+</body>
+
+<!-- 方法2 -->
+<script type="module">
+  import * as THREE from './threejs/build/three.module.js'
+  console.log(THREE)
+</script>
+
+
+<!-- 方法3 -->
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  console.log(THREE)
+</script>
+
+<!-- <script>
+  console.log(THREE)
+</script> -->
+
+</html>
