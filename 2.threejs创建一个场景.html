@@ -20,13 +20,15 @@
   {
     "imports": {
       "three": "./threejs/build/three.module.js",
-      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js"
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js",
+      "stats": "./threejs/examples/jsm/libs/stats.module.js"
     }
   }
 </script>
 <script type="module">
   import * as THREE from 'three'
   import { OrbitControls } from 'OrbitControls'
+  import Stats from 'stats'
 
   // 创建一个三维场景
   const scene = new THREE.Scene()
@@ -72,16 +74,30 @@
   scene.add(axesHelper)
 
 
-  // 创建一个光源对象
-  const pointLight = new THREE.PointLight(0xff00ff, 1000000000000)
-  // 设置光源的位置
-  pointLight.position.set(0, 0, 0)
-  // 将光源添加到场景中
-  scene.add(pointLight)
+  // // 创建一个点光源对象
+  // const pointLight = new THREE.PointLight(0xff00ff, 100000)
+  // // 设置光源的位置
+  // pointLight.position.set(600, 600, 600)
+  // // 将光源添加到场景中
+  // scene.add(pointLight)
 
-  // 可视化点光源
-  const pointLightHelper = new THREE.PointLightHelper(pointLight, 1)
-  scene.add(pointLightHelper)
+  // // 可视化点光源
+  // const pointLightHelper = new THREE.PointLightHelper(pointLight, 10)
+  // scene.add(pointLightHelper)
+
+  // // 创建一个环境光
+  // const light = new THREE.AmbientLight(0x00dd00, 100); // 柔和的白光
+  // scene.add(light);
+
+
+  // 创建一个平行光
+  const directionalLight = new THREE.DirectionalLight(0xff00ff, 100000);
+  directionalLight.position.set(-500, -500, -500)
+  scene.add(directionalLight);
+
+  // 平行光可视化
+  const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 10)
+  scene.add(directionalLightHelper)
 
 
 
@@ -107,6 +123,28 @@
   controls.addEventListener('change', () => {
     renderer.render(scene, camera)
   })
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+  })
+
+
+
+  // 监听动画帧率
+  // 创建stats对象
+  const stats = new Stats()
+  stats.setMode(2)  // 设置模式
+  document.body.appendChild(stats.domElement)
+
+  function render() {
+    mesh2.rotateY(0.05)
+    stats.update()  // 刷新时间
+    renderer.render(scene, camera)
+    requestAnimationFrame(render)
+  }
+  render()
 
 </script>
 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.透视投影相机</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js",
+      "stats": "./threejs/examples/jsm/libs/stats.module.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+  import Stats from 'stats'
+
+  // 创建一个三维场景
+  const scene = new THREE.Scene()
+
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      for (let k = 0; k < 5; k++) {
+        // 创建一个立方体
+        const boxGeometry = new THREE.BoxGeometry(10, 10, 10)
+
+        // 创建一个材质
+        const material = new THREE.MeshPhongMaterial({
+          color: 0x00ffff,
+          transparent: true,   // 开启透明
+          opacity: 0.8  // 设置透明度
+        })
+
+        // 创建一个网格模型
+        const mesh = new THREE.Mesh(boxGeometry, material)
+        // 设置网路模型的坐标
+        mesh.position.set(i * 15, j * 15, k * 15)
+        // 将网格布局添加到场景中
+        scene.add(mesh)
+      }
+
+    }
+  }
+
+
+  // 创建一个相机
+  const camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 2000)
+  // 设置相机的位置
+  camera.position.set(0, 0, 200)
+  // 设置观看点  
+  camera.lookAt(0, 0, 0)
+
+  // // 创建一个点光源
+  // const pointLight = new THREE.PointLight(0xffffff, 100000000)
+  // pointLight.position.set(-100, 100, 200)
+  // scene.add(pointLight)
+
+  // 创建一个环境光
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2)
+  scene.add(ambientLight)
+
+
+  // 创建一个渲染器
+  const renderer = new THREE.WebGLRenderer()
+  console.log(renderer)
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.render(scene, camera)
+
+  const controls = new OrbitControls(camera, renderer.domElement)
+  // // 修改相机观察点
+  // controls.target.set(-100, 100, 30)
+  // // 修改相机视线
+  // controls.update()
+
+
+  controls.addEventListener('change', e => {
+    renderer.render(scene, camera)
+  })
+
+  const axesHelper = new THREE.AxesHelper(100)
+  scene.add(axesHelper)
+
+  document.body.appendChild(renderer.domElement)
+
+
+
+</script>
+
+</html>
