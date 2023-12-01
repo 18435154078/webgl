@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5.材质</title>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+
+  // 创建场景
+  const scene = new THREE.Scene()
+
+  // 创建一个高光网格材质
+  const material = new THREE.MeshPhongMaterial({
+    color: 0x00ffff,
+    shininess: 100   // 高光强度属性
+  })
+
+  // 创建一个漫反射网格材质
+  const material2 = new THREE.MeshLambertMaterial({
+    color: 0x00ffff,
+  })
+
+  // 创建一个球
+  const geometry = new THREE.SphereGeometry(10, 30, 30)
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.position.set(50, 0, 0)
+  scene.add(mesh)
+
+  const geometry2 = new THREE.SphereGeometry(10, 30, 30)
+  const mesh2 = new THREE.Mesh(geometry2, material2)
+  mesh2.position.set(-50, 0, 0)
+  scene.add(mesh2)
+
+  // 创建相机
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+  // 设置相机的位置
+  camera.position.set(0, 0, 100)
+  // 设置相机的视线
+  camera.lookAt(0, 0, 0)
+
+  // 创建环境光
+  const light = new THREE.AmbientLight(0xffffff, 1)
+  scene.add(light)
+  // 创建一个点光源
+  const pointLight = new THREE.PointLight(0xffffff, 100000)
+  pointLight.position.set(10, 10, 10)
+  scene.add(pointLight)
+
+  // 创建渲染器
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true   // 抗锯齿
+  })
+  // renderer.antialias = true     // 抗锯齿
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setPixelRatio(window.devicePixelRatio)   // 告诉threejs当前屏幕的像素比
+  renderer.render(scene, camera)
+  document.body.appendChild(renderer.domElement)
+
+  // 创建控制器
+  const controls = new OrbitControls(camera, renderer.domElement)
+  // 监听控制器的变化
+  controls.addEventListener('change', e => {
+    renderer.render(scene, camera)
+  })
+
+</script>
+
+</html>
