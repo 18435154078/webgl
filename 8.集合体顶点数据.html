@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8.集合体顶点数据</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+
+  const scene = new THREE.Scene()
+
+  const geomery = new THREE.BoxGeometry(100, 100, 100)
+  // 创建一个材质
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x00ff00
+  })
+  // 创建一个网格模型，用来表示生活中的物体
+  // const mesh = new THREE.Mesh(geomery, material)
+  // 定义网格模型坐标
+  mesh.position.set(0, 10, 0)
+
+  // 将模型添加到场景中
+  scene.add(mesh)
+
+  // 创建一个透视投影相机对象
+  const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2000)
+  // 设置相机的位置
+  camera.position.set(100, 200, 200)
+  // 设置相机的视线   即观察点的坐标
+  // camera.lookAt(0, 0, 0)
+  camera.lookAt(mesh.position)
+
+  // 创建一个webgl渲染器
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true   // 抗锯齿
+  })
+  // renderer.antialias = true     // 抗锯齿
+  renderer.setPixelRatio(window.devicePixelRatio)   // 告诉threejs当前屏幕的像素比
+  renderer.setClearColor(0x999999)   // 设置背景颜色
+  // 设置渲染区域尺寸
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  // 执行render方法
+  renderer.render(scene, camera)
+  // 将webgl渲染的canvas内容添加到body
+  document.body.appendChild(renderer.domElement)
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.addEventListener('change', () => {
+    renderer.render(scene, camera)
+  })
+
+</script>
+
+</html>

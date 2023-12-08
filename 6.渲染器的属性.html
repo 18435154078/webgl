@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>6.渲染器的属性</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -54,7 +59,7 @@
   const light = new THREE.AmbientLight(0xffffff, 1)
   scene.add(light)
   // 创建一个点光源
-  const pointLight = new THREE.PointLight(0xffffff, 100000)
+  const pointLight = new THREE.PointLight(0xffffff, 1000)
   pointLight.position.set(10, 10, 10)
   scene.add(pointLight)
 
@@ -80,16 +85,3 @@
 </script>
 
 </html>
-
-新版热心肠研究院持续优化
-完成新官网的整体优化
-完成2.1版本的新功能开发
-
-迭代优化新版编辑部
-完成新版编辑部优化需求开发
-完成新版编辑部其他bug优化
-
-1.完成新老页面测试：肠道产业、行业发声、R•AI、搜索页面（热门搜索、历史搜索、搜索结果数据）、收藏、登录、账号合并、新页面-标题&微信分享、老页面-订阅&评论、rem适配等
-2.完成进行二轮需求测试（本次需求变动较大，如日报、页头等做整体大的调整）
-3.进行公司层面评审会，对提出问题进行记录，根据产品整理三轮需求完成测试
-4.最后首页进行新的数据调整，如文案、图片、头像等

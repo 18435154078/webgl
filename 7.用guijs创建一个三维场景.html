@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7.用guijs创建一个三维场景</title>
+  <style>
+    * {
+      margin: 0
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js",
+      "GUI": "./threejs/examples/jsm/libs/lil-gui.module.min.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+  import { GUI } from 'GUI'
+
+  let obj = {
+    isRotate: true,
+  }
+
+  // 创建场景
+  const scene = new THREE.Scene()
+
+  // 创建一个GUI
+  const gui = new GUI()
+
+  gui.add(obj, 'isRotate')
+
+  // 创建一个高光网格材质
+  const material = new THREE.MeshPhongMaterial({
+    color: 0x00ffff,
+    // shininess: 100   // 高光强度属性
+  })
+
+  // material.color = new THREE.Color(obj.color)
+
+  gui.addColor(material, 'color')
+
+  // 创建一个漫反射网格材质
+  const material2 = new THREE.MeshLambertMaterial({
+    color: 0x00ffff,
+  })
+
+  const geometry = new THREE.BoxGeometry(30, 30, 30)
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.position.set(0, 0, 0)
+  scene.add(mesh)
+
+  const position = gui.addFolder('位置')
+  position.add(mesh.position, 'x', 0, 100)
+  position.add(mesh.position, 'y', [0, 50, 100])
+  position.add(mesh.position, 'z', {
+    '左': -100,
+    '中': 0,
+    '右': 100
+  })
+
+  // 将模型添加到场景中
+  scene.add(mesh)
+
+  // 创建相机
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+  // 设置相机的位置
+  camera.position.set(0, 0, 150)
+  // 设置相机的视线
+  camera.lookAt(0, 0, 0)
+
+
+  // 添加一个环境光
+  const directionalLight = new THREE.AmbientLight(0xffffff, 1)
+  scene.add(directionalLight)
+  gui.add(directionalLight, 'intensity', 0, 2).name('光照强度')
+  scene.add(directionalLight)
+
+  // 创建一个坐标系
+  const axesHelper = new THREE.AxesHelper(100)
+  // 将坐标系添加到场景中
+  scene.add(axesHelper)
+
+
+  // 创建一个渲染器
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true   // 抗锯齿
+  })
+
+  // 设置背景颜色
+  // renderer.setClearColor(0x999999)
+
+  // 设置宽高
+  renderer.setSize(window.innerWidth, window.innerHeight)
+
+  renderer.render(scene, camera)
+
+  // 将渲染器添加到body中
+  document.body.appendChild(renderer.domElement)
+
+  function render() {
+    if (obj.isRotate) {
+      mesh.rotateY(0.05)
+      mesh.rotateX(0.02)
+      // mesh.rotateZ(0.03)
+    }
+    renderer.render(scene, camera)
+    requestAnimationFrame(render)
+  }
+  render()
+
+  // 创建一个控制器
+  const controls = new OrbitControls(camera, renderer.domElement)
+
+  // 监听控制器的变化
+  controls.addEventListener('change', e => {
+    renderer.render(scene, camera)
+  })
+
+</script>
+
+</html>

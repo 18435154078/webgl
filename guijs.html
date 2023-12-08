@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>guijs</title>
+  <style>
+    * {
+      margin: 0;
+    }
+
+    .color-div {
+      width: 100px;
+      height: 100px;
+      position: fixed;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <span class="a">0</span>
+  <br />
+  <span class="b">0</span>
+  <br /> -->
+  <!-- <span class="num">0</span> -->
+  <div class="color-div"></div>
+  <div class="boolean"></div>
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "guijs": "./threejs/examples/jsm/libs/lil-gui.module.min.js"
+    }
+  }
+</script>
+<script type="module">
+  import Gui from 'guijs';
+  const guijs = new Gui();
+  let position = guijs.addFolder('位置')
+  position.add({ left: 0 }, 'left', 0, 500).name('111')
+  position.add({ top: 0 }, 'top', 0, 500).step(1)
+  // position.add({ num: 0 }, 'c', [2, 5, 9, 30, 50, 99]).step(1)
+
+  guijs.add({ boolean: false }, 'boolean').onChange(e => {
+    document.querySelector('.boolean').innerHTML = e
+  })
+
+  position.onChange(e => {
+    // let el = document.querySelector(`.${e.property}`)
+    // el.innerHTML = e.value
+    document.querySelector('.color-div').style[e.property] = e.value + 'px'
+  })
+  position.close()
+  guijs.addColor({ color: 0x00ff00 }, 'color').name('颜色')
+  guijs.onChange(e => {
+    document.querySelector('.color-div').style.backgroundColor = `#${e.value.toString(16)}`
+  })
+</script>
+
+</html>
