@@ -29,26 +29,65 @@
 
   const scene = new THREE.Scene()
 
-  const geomery = new THREE.BoxGeometry(100, 100, 100)
-  // 创建一个材质
-  const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00
-  })
-  // 创建一个网格模型，用来表示生活中的物体
-  // const mesh = new THREE.Mesh(geomery, material)
-  // 定义网格模型坐标
-  mesh.position.set(0, 10, 0)
+  // const geometry = new THREE.BoxGeometry(100, 100, 100)
+  const geometry = new THREE.BufferGeometry()  // 创建一个空的几何体
 
-  // 将模型添加到场景中
+  // 顶点
+  let a = new Float32Array([
+    0, 0, 0,
+    10, 0,0,
+    10,10,0,
+    0,10,0,
+    0,0,0,
+    10,10,0
+  ])
+  // 属性缓冲对象
+  const attribute = new THREE.BufferAttribute(a, 3)
+
+  // 设置几何体的顶点位置属性
+  geometry.attributes.position = attribute
+
+  // 创建一个点模型材质
+  // const material = new THREE.PointsMaterial({
+  //   color: 0xff0000,
+  //   size: 2
+  // })
+  // // 创建一个点模型
+  // const point = new THREE.Points(geometry, material)
+  // console.log(point)
+  // scene.add(point)
+
+
+
+  // 创建一个线模型材质
+  // const material = new THREE.LineBasicMaterial({
+  //   color: 0xff0000
+  // })
+  // console.log(material)
+  // 创建一个线模型
+  // const line = new THREE.LineSegments(geometry, material)
+  // scene.add(line)
+
+
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x00ffff
+  })
+  const mesh = new THREE.Mesh(geometry, material)
   scene.add(mesh)
+
+  // 创建一个坐标系
+const axesHelper = new THREE.AxesHelper(20)
+// 将坐标系添加到场景中
+scene.add(axesHelper)
+  
 
   // 创建一个透视投影相机对象
   const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2000)
   // 设置相机的位置
-  camera.position.set(100, 200, 200)
+  camera.position.set(30, 30, 30)
   // 设置相机的视线   即观察点的坐标
-  // camera.lookAt(0, 0, 0)
-  camera.lookAt(mesh.position)
+  camera.lookAt(0, 0, 0)
+  // camera.lookAt(mesh.position)
 
   // 创建一个webgl渲染器
   const renderer = new THREE.WebGLRenderer({
@@ -56,7 +95,7 @@
   })
   // renderer.antialias = true     // 抗锯齿
   renderer.setPixelRatio(window.devicePixelRatio)   // 告诉threejs当前屏幕的像素比
-  renderer.setClearColor(0x999999)   // 设置背景颜色
+  // renderer.setClearColor(0x999999)   // 设置背景颜色
   // 设置渲染区域尺寸
   renderer.setSize(window.innerWidth, window.innerHeight)
   // 执行render方法
