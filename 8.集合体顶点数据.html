@@ -32,20 +32,51 @@
   // const geometry = new THREE.BoxGeometry(100, 100, 100)
   const geometry = new THREE.BufferGeometry()  // 创建一个空的几何体
 
-  // 顶点
+  // 用类型数组创建顶点数据
+  // let a = new Float32Array([
+  //   0, 0, 0,
+  //   10, 0, 0,
+  //   10, 10, 0,
+  //   0, 10, 0,
+  //   0, 0, 0,
+  //   10, 10, 0
+  // ])
+
+  // 用类型数组创建顶点数据
   let a = new Float32Array([
     0, 0, 0,
-    10, 0,0,
-    10,10,0,
-    0,10,0,
-    0,0,0,
-    10,10,0
+    10, 0, 0,
+    10, 10, 0,
+    0, 10, 0,
+    // 0, 0, 0,
+    // 10, 10, 0
   ])
-  // 属性缓冲对象
+
+  // 用几何体索引定义顶点数据
+  const indexes = new Uint16Array([
+    0, 1, 2,
+    3, 0, 2
+  ])
+
+  // 设置几何体的索引
+  geometry.index = new THREE.BufferAttribute(indexes, 1)
+
+  // 创建法向量定点
+  const normals = new Float32Array([
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+  ])
+  geometry.attributes.normal = new THREE.BufferAttribute(normals, 3)
+
+
+  // 创建属性缓冲对象
   const attribute = new THREE.BufferAttribute(a, 3)
 
   // 设置几何体的顶点位置属性
   geometry.attributes.position = attribute
+
 
   // 创建一个点模型材质
   // const material = new THREE.PointsMaterial({
@@ -68,26 +99,100 @@
   // const line = new THREE.LineSegments(geometry, material)
   // scene.add(line)
 
+  // 创建一个纹理对象
+  const texture = new THREE.TextureLoader().load('./threejs/examples/textures/planets/earth_atmos_4096.jpg')
 
-  const material = new THREE.MeshBasicMaterial({
-    color: 0x00ffff
+  const material = new THREE.MeshLambertMaterial({
+    // color: 0xffff00,
+    map: texture,
+    side: THREE.DoubleSide,
+    // wireframe: true // 开启线框
   })
+
+  setTimeout(() => {
+    texture.image.setAttribute('src', './threejs/examples/textures/planets/moon_1024.jpg')
+  }, 2000);
+
+  const geometry2 = new THREE.CapsuleGeometry(10, 11, 4, 8);
+
+  const sphereGeometry = new THREE.SphereGeometry(10, 20, 20)
+
   const mesh = new THREE.Mesh(geometry, material)
-  scene.add(mesh)
+
+  const mesh4 = new THREE.Mesh(sphereGeometry, material)
+
+
+  mesh4.material.map = texture
+
+  scene.add(mesh4)
+
+
+  const mesh3 = mesh.clone()
+
+  mesh3.name = '平面2'
+  mesh.name = '平面2'
+  mesh3.position.set(3, 0, 0)
+
+  const group = new THREE.Group()
+  group.add(mesh, mesh3)
+
+  // scene.add(group)
+
+  // scene.traverse(item => {
+  //   console.log(item)
+  // })
+
+  console.log(scene.getObjectByName('平面2'))
+
+  const v = new THREE.Vector3(1, 1, 1)
+  mesh.position.copy(v)
+
+  const mesh2 = new THREE.Mesh(geometry2, material)
+  // mesh2.rotateZ(Math.PI / 2)
+  // mesh2.rotation.x = Math.PI / 2
+  // mesh2.position.set(0, 0, 10)
+  // mesh2.scale.x = 0.5
+
+  const vector = new THREE.Vector3(1, 1, 1)
+  vector.normalize()
+
+  // mesh2.translateOnAxis(vector, 30)
+  mesh2.setRotationFromAxisAngle(vector, Math.PI / 2)
+
+  // console.log(mesh2)
+
+  // scene.add(mesh)
+
+  // scene.remove(mesh)
+  // console.log(scene)
+
+  // scene.add(mesh2)
 
   // 创建一个坐标系
-const axesHelper = new THREE.AxesHelper(20)
-// 将坐标系添加到场景中
-scene.add(axesHelper)
-  
+  const axesHelper = new THREE.AxesHelper(20)
+  // 将坐标系添加到场景中
+  scene.add(axesHelper)
+
+  // // 创建一个光源对象
+  // const pointLight = new THREE.PointLight(0xffffff, 1000000)
+  // // 设置光源的位置
+  // pointLight.position.set(0, 0, 100)
+  // // 将光源添加到场景中
+  // scene.add(pointLight)
+
+  const light = new THREE.AmbientLight(0x404040, 100); // 柔和的白光
+  scene.add(light);
+
 
   // 创建一个透视投影相机对象
   const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2000)
   // 设置相机的位置
-  camera.position.set(30, 30, 30)
+  camera.position.set(10, 10, 10)
   // 设置相机的视线   即观察点的坐标
   camera.lookAt(0, 0, 0)
   // camera.lookAt(mesh.position)
+
+
 
   // 创建一个webgl渲染器
   const renderer = new THREE.WebGLRenderer({
@@ -102,6 +207,13 @@ scene.add(axesHelper)
   renderer.render(scene, camera)
   // 将webgl渲染的canvas内容添加到body
   document.body.appendChild(renderer.domElement)
+
+  function render() {
+    // mesh4.rotateY(0.01)
+    renderer.render(scene, camera)
+    requestAnimationFrame(render)
+  }
+  render()
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener('change', () => {

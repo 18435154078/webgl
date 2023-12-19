@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9.地球系统小案例</title>
+  <style>
+    * {
+      margin: 0;
+    }
+
+    .label {
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js",
+      "CSS2DRenderer": "./threejs/examples/jsm/renderers/CSS2DRenderer.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+  import { CSS2DRenderer, CSS2DObject } from 'CSS2DRenderer';
+
+  const scene = new THREE.Scene()
+  let labelRenderer
+
+  const geometry = new THREE.SphereGeometry(20, 32, 16)
+  const texture = new THREE.TextureLoader().load('./threejs/examples/textures/planets/earth_atmos_4096.jpg')
+  const material = new THREE.LineBasicMaterial({
+    // color: 0x0000ff
+    map: texture
+  })
+
+  const earth = new THREE.Mesh(geometry, material)
+  scene.add(earth)
+
+  const earthDiv = document.createElement('div');
+  earthDiv.className = 'label';
+  earthDiv.textContent = 'Earth';
+  earthDiv.style.backgroundColor = 'transparent';
+
+  const earthLabel = new CSS2DObject(earthDiv);
+  earthLabel.position.set(30, 0, 0);
+  earthLabel.center.set(0, 1);
+  earth.add(earthLabel);
+  earthLabel.layers.set(0);
+
+
+
+
+  const geometry2 = new THREE.SphereGeometry(6, 32, 16)
+  const texture2 = new THREE.TextureLoader().load('./threejs/examples/textures/planets/moon_1024.jpg')
+
+  geometry2.translate(60, 0, 0)
+
+  const material2 = new THREE.LineBasicMaterial({
+    // color: 0x0000ff
+    map: texture2
+  })
+
+  const moon = new THREE.Mesh(geometry2, material2)
+
+  const moonDiv = document.createElement('div');
+  moonDiv.className = 'label';
+  moonDiv.textContent = 'Moon';
+  moonDiv.style.backgroundColor = 'transparent';
+  moonDiv.style.fontSize = '12px';
+
+  const moonLabel = new CSS2DObject(moonDiv);
+  moonLabel.position.set(70, 0, 0);
+  moonLabel.center.set(0, 1);
+  moon.add(moonLabel);
+
+  moonLabel.layers.set(0);
+
+  scene.add(moon)
+
+
+
+
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(100, 60, 100)
+  camera.lookAt(0, 0, 0)
+  camera.layers.enableAll()
+
+  const renderer = new THREE.WebGLRenderer()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+
+  labelRenderer = new CSS2DRenderer();
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.domElement.style.position = 'absolute';
+  labelRenderer.domElement.style.top = '0px';
+  document.body.appendChild(labelRenderer.domElement);
+  labelRenderer.render(scene, camera);
+
+  const controls = new OrbitControls(camera, labelRenderer.domElement)
+  controls.addEventListener('change', () => {
+
+  })
+
+
+
+  function render() {
+    moon.rotateY(0.005)
+    renderer.render(scene, camera)
+    labelRenderer.render(scene, camera);
+    requestAnimationFrame(render)
+  }
+  render()
+
+</script>
+
+</html>
