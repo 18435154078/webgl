@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9.纹理贴图</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'OrbitControls';
+
+  const scene = new THREE.Scene();
+
+  const geometry = new THREE.PlaneGeometry(500, 500);
+
+  const textureLoader = new THREE.TextureLoader()
+  const texture = textureLoader.load('./assets/di.jpg')
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(10, 10);
+  texture.offset.set(.5, .5)
+  console.log(THREE)
+  console.log(texture)
+
+  const material = new THREE.LineBasicMaterial({
+    map: texture
+  })
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.rotateX(-0.5 * Math.PI)
+  scene.add(mesh)
+
+  const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(0, 200, 200)
+  // 设置相机的视线   即观察点的坐标
+  // camera.lookAt(0, 0, 0)
+  camera.lookAt(mesh.position)
+
+  // 创建一个坐标系
+  const axesHelper = new THREE.AxesHelper(500)
+  // 将坐标系添加到场景中
+  scene.add(axesHelper)
+
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true
+  })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+
+  function render() {
+    renderer.render(scene, camera)
+    requestAnimationFrame(render)
+  }
+  render()
+
+
+</script>
+
+</html>

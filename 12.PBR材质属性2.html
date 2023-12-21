@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12.PBR材质属性</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "./threejs/build/three.module.js",
+      "OrbitControls": "./threejs/examples/jsm/controls/OrbitControls.js",
+      "GLTFLoader": "./threejs/examples/jsm/loaders/GLTFLoader.js",
+      "GUI": "./threejs/examples/jsm/libs/lil-gui.module.min.js"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three'
+  import { OrbitControls } from 'OrbitControls'
+  import { GLTFLoader } from 'GLTFLoader'
+  import GUI from 'GUI'
+
+  const gui = new GUI()
+
+  const loader = new GLTFLoader()
+
+  const textureCude = new THREE.CubeTextureLoader()
+    .setPath('assets/环境贴图/环境贴图1/')
+    .load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'])
+
+  const scene = new THREE.Scene()
+  // scene.background = textureCude
+  scene.environment = textureCude
+
+  const gridHelper = new THREE.GridHelper(2000, 2000);
+  scene.add(gridHelper);
+
+
+  loader.load('./assets/轿车.glb', (gltf) => {
+    gltf.scene.traverse(item => {
+      if (item.isMesh) {
+        // console.log(item)
+      }
+    })
+    let 外壳04 = gltf.scene.getObjectByName('外壳01')
+    外壳04.material = new THREE.MeshPhysicalMaterial({
+      color: 外壳04.material.color
+    })
+    gui.add(外壳04.material, 'clearcoat', 0, 1).name('清漆层属性-' + 外壳04.name)
+    gui.add(外壳04.material, 'clearcoatRoughness', 0, 1).name('清漆层粗糙度-' + 外壳04.name)
+    gui.add(外壳04.material, 'metalness', 0, 1).name('金属度-' + 外壳04.name)
+    gui.add(外壳04.material, 'roughness', 0, 1).name('粗糙度-' + 外壳04.name)
+
+    let 玻璃01 = gltf.scene.getObjectByName('玻璃01')
+    玻璃01.material = new THREE.MeshPhysicalMaterial({
+      color: 玻璃01.material.color,
+      transmission: 1,
+      transparent: true,
+      opacity: 0.6,
+    })
+    gui.add(玻璃01.material, 'transmission', 0, 1).name('透光度-' + 玻璃01.name)
+    gui.add(玻璃01.material, 'opacity', 0, 1).name('透明度-' + 玻璃01.name)
+    gui.add(玻璃01.material, 'reflectivity', 0, 1).name('反射率-' + 玻璃01.name)
+    gui.add(玻璃01.material, 'ior', 1, 2.333).name('折射率-' + 玻璃01.name)
+    scene.add(gltf.scene)
+  }, res => {
+    // console.log(res.loaded / res.total)
+    console.log(res)
+  })
+
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(-300, 200, 200)
+
+  // 创建一个坐标系
+  const axesHelper = new THREE.AxesHelper(400)
+  // 将坐标系添加到场景中
+  // scene.add(axesHelper)
+
+  const light = new THREE.AmbientLight(0x404040, 2); // 柔和的白光
+  // scene.add(light);
+
+  // 创建一个平行光
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+  directionalLight.position.set(-500, 500, 500)
+  // scene.add(directionalLight);
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true
+  })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+
+  const controls = new OrbitControls(camera, renderer.domElement)
+
+  function render() {
+    if (scene.rotation.y < 1) {
+      // scene.rotateY(.002)
+    }
+    renderer.render(scene, camera)
+    requestAnimationFrame(render)
+  }
+
+  render()
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+  })
+
+</script>
+
+</html>
