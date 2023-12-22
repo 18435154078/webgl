@@ -81,16 +81,13 @@
   const v2 = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
   const pass = new OutlinePass(v2, scene, camera)
-  // pass.selectedObjects = [mesh]
-
-
+  pass.selectedObjects = [mesh]
   composer.addPass(pass)
 
   function render() {
     composer.render()
     requestAnimationFrame(render)
   }
-
   render()
   const controls = new OrbitControls(camera, renderer.domElement)
 </script>
